@@ -11,7 +11,7 @@ import "./Ownable.sol";
 contract AIFactory is Ownable {
     uint256 public deploymentFee;
     address[] public deployedTokens;
-    event TokenDeployed(address indexed tokenAddress, address indexed owner);
+    event TokenDeployed(address indexed tokenAddress, address indexed owner, string name, string ipfsHash);
     constructor(uint256 _deploymentFee) Ownable(msg.sender) {
         deploymentFee = _deploymentFee;
     }
@@ -19,7 +19,7 @@ contract AIFactory is Ownable {
     function setDeploymentFee(uint256 _newFee) external onlyOwner {
         deploymentFee = _newFee;
     }
-    function createToken(string memory _name, string memory _symbol, uint _initialSupply, bool isPremium, bool isAntiwhale, bool noOwner, bool taxable, uint256 taxRate, address taxReceiver) public payable returns (address) {
+    function createToken(string memory _name, string memory _symbol, uint _initialSupply, string memory ipfsHash, bool isPremium, bool isAntiwhale, bool noOwner, bool taxable, uint256 taxRate, address taxReceiver) public payable returns (address) {
         require(msg.value == deploymentFee, "Insufficient fee in ETH");
         require(taxRate <= 10, "Tax rate must be less than or equal to 10%");
         AIToken newToken;
@@ -42,7 +42,7 @@ contract AIFactory is Ownable {
             newToken.initialize(_name, _symbol, _initialSupply, msg.sender);
         }
         deployedTokens.push(address(newToken));
-        emit TokenDeployed(address(newToken), msg.sender);
+        emit TokenDeployed(address(newToken), msg.sender, _name, ipfsHash);
         return address(newToken);
     }
     function getDeployedTokens() external view returns (address[] memory) {
