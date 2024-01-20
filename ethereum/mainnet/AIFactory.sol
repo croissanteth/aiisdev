@@ -33,7 +33,7 @@ contract AIFactory is Ownable {
         } else if (taxRate) {
             newToken = new AITokenTaxable();
         } else {
-            newToken = new AITokenPremium();
+            newToken = new AITokenGPT4();
         }
 
         if (taxable) {
